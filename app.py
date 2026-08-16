@@ -27,7 +27,22 @@ from routes.password_reset import password_reset_bp
 app = Flask(__name__)
 
 app.config.from_object(Config)
-Swagger(app)
+swagger_config = {
+    "headers": [],
+    "specs": [
+        {
+            "endpoint": "apispec_1",
+            "route": "/apispec_1.json",
+            "rule_filter": lambda rule: True,
+            "model_filter": lambda tag: True,
+        }
+    ],
+    "static_url_path": "/flasgger_static",
+    "swagger_ui": True,
+    "specs_route": "/apidocs/",
+}
+
+Swagger(app, config=swagger_config)
 db.init_app(app)
 migrate.init_app(app, db)
 jwt.init_app(app)

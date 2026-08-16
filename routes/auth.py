@@ -71,6 +71,36 @@ def register():
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
+    """
+    Login a user and return a JWT access token.
+    ---
+    tags:
+      - Authentication
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - email
+            - password
+          properties:
+            email:
+              type: string
+              format: email
+              example: legend@gmail.com
+            password:
+              type: string
+              example: password123
+    responses:
+      200:
+        description: Login successful.
+      400:
+        description: Email and password are required.
+      401:
+        description: Invalid email or password.
+    """
     data = request.get_json()
 
     email = data.get("email")
@@ -95,6 +125,21 @@ def login():
 @auth_bp.route("/profile", methods=["GET"])
 @jwt_required()
 def profile():
+    """
+    Get the currently authenticated user's profile.
+    ---
+    tags:
+      - Profile
+    security:
+      - Bearer: []
+    responses:
+      200:
+        description: User profile retrieved successfully.
+      401:
+        description: Authentication required or token is invalid.
+      404:
+        description: User not found.
+    """
     current_user_id = get_jwt_identity()
 
     user = db.session.get(User, int(current_user_id))

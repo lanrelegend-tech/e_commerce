@@ -14,6 +14,15 @@ from routes.cart import cart_bp
 from routes.order import order_bp
 from flasgger import Swagger
 from routes.admin import admin_bp
+from models.wishlist import Wishlist
+from routes.wishlist import wishlist_bp
+from models.review import Review
+from routes.review import review_bp
+from mail_config import mail
+from routes.profile import profile_bp
+from routes.password_reset import password_reset_bp
+
+
 
 app = Flask(__name__)
 
@@ -23,12 +32,26 @@ db.init_app(app)
 migrate.init_app(app, db)
 jwt.init_app(app)
 bcrypt.init_app(app)
+app.register_blueprint(password_reset_bp)
+app.register_blueprint(profile_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(category_bp)
 app.register_blueprint(product_bp)
 app.register_blueprint(cart_bp)
 app.register_blueprint(order_bp)
 app.register_blueprint(admin_bp)
+app.register_blueprint(wishlist_bp)
+app.register_blueprint(review_bp)
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = "YOUR_EMAIL@gmail.com"
+app.config["MAIL_PASSWORD"] = "YOUR_APP_PASSWORD"
+app.config["MAIL_DEFAULT_SENDER"] = "YOUR_EMAIL@gmail.com"
+
+mail.init_app(app)
+
+
 
 
 @app.route("/")
@@ -37,4 +60,4 @@ def home():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
